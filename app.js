@@ -65,6 +65,18 @@ const controllerMusicas = require('./controller/controller.js')
     })
 
 
+    app.delete('/v1/soundhub/musica/:id', cors(), async (request, response, next)=>{
+
+        let idMusica = request.params.id
+    
+        let dadosMusica = await controllerMusicas.setExcluirMusica(idMusica)
+    
+        response.status(dadosMusica.status_code)
+        response.json(dadosMusica)
+        
+      
+    })
+
 
     /***********************************************USUARIOS**********************************************************/
     //GET
@@ -141,6 +153,103 @@ const controllerMusicas = require('./controller/controller.js')
         response.status(dadosUsuario.status_code)
         response.json(dadosUsuario)
     })
+
+
+
+
+
+
+
+    //*********************************************************************************************GENERO*********************************************************************************************//
+
+app.get('/v1/soundhub/genero/:id', cors(), async function(request, response, next){
+
+
+    //recebe o ID da requisição
+    let idGenero = request.params.id
+
+
+    //encaminha o ID para a controller buscar o filme
+    let dadosGenero = await controllerMusicas.getBuscarGeneroId(idGenero)
+
+    response.status(dadosGenero.status_code)
+    response.json(dadosGenero)
+})
+
+app.post('/v1/soundhub/genero', cors(), bodyParserJSON, async function(request, response){
+    //recebe o contente-type da requisição
+    let contentType = request.headers['content-type']
+
+
+    
+    //recebe todos os daoos encaminhados na requisição pelo body
+    let dadosBody = request.body
+
+
+    //encaminha os dados para o controller enviar para DAO
+    let resultDadosNovoGenero = await controllerMusicas.setNovoGenero(dadosBody, contentType)
+    response.status(resultDadosNovoGenero.status_code)
+
+    response.json(resultDadosNovoGenero)
+})
+
+app.delete('/v1/soundhub/genero/:id', cors(), async (request, response, next)=>{
+
+    let idGenero = request.params.id
+
+    let dadosGenero = await controllerMusicas.setExcluirGenero(idGenero)
+
+    response.status(dadosGenero.status_code)
+    response.json(dadosGenero)
+    
+  
+})
+
+app.put('/v1/soundhub/genero/:id', cors(), bodyParserJSON, async function (request, response) {
+    let idGenero = request.params.id
+
+    let contentType=request.headers['content-type']
+    let dadosBody = request.body
+    
+    let resultDadosNovoGenero = await controllerMusicas.setAtualizarGenero(idGenero,dadosBody,contentType)
+
+    response.status(resultDadosNovoGenero.status_code)
+    response.json(resultDadosNovoGenero)
+})
+
+app.get('/v1/soundhub/generos', cors(), async function (_request, response) {
+    let dadosGeneros = await controllerMusicas.getListarGeneros()
+
+    response.json(dadosGeneros)
+    response.status(200)
+})
+
+
+
+    //*********************************************************************************************ARTISTAS*********************************************************************************************//
+    app.get('/v1/soundhub/artistas', cors(),async function (request,response,next){
+
+        // chama a função da controller para retornar os filmes;
+        let dadosArtista = await controllerMusicas.getListarArtista()
+    
+        // validação para retornar o Json dos filmes ou retornar o erro 404;
+       response.status(dadosArtista.status_code)
+       response.json(dadosArtista)
+    });
+
+
+    
+app.get('/v1/soundhub/artista/:id', cors(), async function(request,response,next){
+
+    // recebe o id da requisição
+    let idArtista = request.params.id
+
+    //encaminha o id para a acontroller buscar o Ator
+    let dadosArtista = await controllerMusicas.getListarArtistaByID(idArtista)
+
+    response.status(dadosArtista.status_code);
+    response.json(dadosArtista);
+})
 
     app.listen('8080', function(){
         console.log('API FUNCIONANDO')

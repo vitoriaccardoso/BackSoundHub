@@ -39,29 +39,28 @@ const insertMusica = async function(dadosMusicas){
     let sql;
     try {
         if (dadosMusicas.foto_capa != '' && dadosMusicas.foto_capa != null && dadosMusicas.foto_capa != undefined) {
-            sql = `insert into tbl_musica (nome, duracao, id_playlist, id_genero, id_album, foto_capa, URL) 
+            sql = `insert into tbl_musica (nome, duracao, foto_capa, id_playlist, id_genero, id_album, URL) 
             values(
                 '${dadosMusicas.nome}',
-                '${dadosMusicas.email}',
-                '${dadosMusicas.senha}',
-                '${dadosMusicas.data_registro}',
-                '${dadosMusicas.data_relancamento}',
-                '${dadosMusicas.id_musica}',
+                '${dadosMusicas.duracao}',
                 '${dadosMusicas.foto_capa}',
+                '${dadosMusicas.id_playlist}',
+                '${dadosMusicas.id_genero}',
+                '${dadosMusicas.id_album}',
                 '${dadosMusicas.URL}'
             )`
         }
         else {
-            `insert into tbl_musica (nome, email, senha, data_registro, id_musica, foto_capa, URL) 
+            `insert into tbl_musicainsert into tbl_musica (nome, duracao, foto_capa, id_playlist, id_genero, id_album, URL) 
+
             values(
                 '${dadosMusicas.nome}',
-                '${dadosMusicas.email}',
-                '${dadosMusicas.senha}',
-                '${dadosMusicas.data_registro}',
-                '${dadosMusicas.data_relancamento}',
-                '${dadosMusicas.id_musica}',
-               null,
-               '${dadosMusicas.URL}'
+                '${dadosMusicas.duracao}',
+                '${dadosMusicas.foto_capa}',
+                '${dadosMusicas.id_playlist}',
+                '${dadosMusicas.id_genero}',
+                null,
+                '${dadosMusicas.URL}'
                 )`
         }
         let result = await prisma.$executeRawUnsafe(sql)
@@ -87,7 +86,10 @@ const deleteMusica = async function (id) {
         console.error(error)
         return false
     }
-};
+}
+
+
+
 
 
 
@@ -162,6 +164,7 @@ const insertUsuario = async function(dadosUsuarios){
 
 }
 
+
 const deleteUsuario = async function (id) {
     try {
         const sql = `DELETE FROM tbl_usuario WHERE id_usuarios = ${id}`; 
@@ -215,6 +218,144 @@ const updateUsuario = async function(id_usuario, dadosUsuarios) {
     }
 }
 
+
+
+
+
+
+
+
+/***************************************GENERO**********************************************************/
+
+const selectGeneroById = async function (id) {
+    try {
+        let sql = `select * from tbl_genero where id_genero = ${id}`
+    
+        let rsGenero= await prisma.$queryRawUnsafe(sql)
+        return rsGenero
+        
+    } catch (error) {
+        return false
+        
+    }
+
+}
+
+const insertGenero = async function(dadosGenero){
+    let sql;
+    try {
+        
+            sql = `insert into tbl_genero (nome) 
+            values(
+                '${dadosGenero.nome}'
+          )`
+        
+       
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        if (result) {
+            return true
+        }
+        else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+
+}
+
+
+const deleteGenero = async function(id){
+    try {
+        const sql = `delete from tbl_genero where id_genero = ${id}`
+        let rsGenero = await prisma.$executeRawUnsafe(sql)
+        
+        return rsGenero
+
+    } catch (error) {
+        return false
+    }
+
+}
+
+const updateGenero = async function (id, dadoAtualizado) {
+    let sql;
+
+    try {
+        sql = `UPDATE tbl_genero
+                SET
+                    nome = '${dadoAtualizado.nome}'
+                WHERE
+                    id_genero = ${id}`
+
+        let result = await prisma.$executeRawUnsafe(sql)
+        if (result) {
+            return true
+        }
+        else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
+const selectAllGenero = async function (){
+    let sql = 'select * from tbl_genero'
+
+    //$queryRawUnsafe(sql)
+    //$queryRaw('select * from tbl_filme')
+
+    let rsGenero = await prisma.$queryRawUnsafe(sql)
+
+    if(rsGenero.length > 0)
+        return rsGenero
+    else 
+        return false
+
+}
+
+
+
+/*******************************************ARTISTA************************************************************** */
+const selectAllArtista = async function(){
+    let sql = 'select * from tbl_artista'
+
+    let rsArtista = await prisma.$queryRawUnsafe(sql)
+
+    if(rsArtista.length > 0)
+        return rsArtista
+    else 
+        return false
+
+
+}
+
+
+const selectByIdArtista = async function(id){
+
+    //encaminha o script sql par o bd
+    try {
+
+        //ScriptSQL para buscar um ator pelo ID
+        let sql = `select * from tbl_artista where id_artista=${id}`
+
+        //Encaminha o script SQL para o Banco de Dados
+        let rsArtista = await prisma.$queryRawUnsafe(sql)
+
+        return rsArtista
+
+    } catch (error) {
+
+        return false
+    }
+
+}
+
+
+
+
 module.exports = {
     selectAllMusicas,
     selectMusicaByID,
@@ -226,5 +367,19 @@ module.exports = {
     insertUsuario,
     deleteUsuario,
     selectusuarioByID,
-    updateUsuario
+    updateUsuario,
+
+
+    //genero
+selectGeneroById,
+selectAllGenero,
+insertGenero,
+deleteGenero,
+updateGenero,
+
+
+//artista
+selectAllArtista,
+selectByIdArtista
+
 }

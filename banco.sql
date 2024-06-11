@@ -15,6 +15,15 @@ foreign key (id_musica) references tbl_musica(id_musica)
 ALTER TABLE `db_sound_hub_turma_ba`.`tbl_usuario` 
 DROP COLUMN `data_registro`;
 
+
+insert into tbl_usuario(nome, email, senha, id_musica, foto_capa)values
+("areçigkuha",
+ "gmail.com" ,
+ "1234",
+1,
+"teste.com");
+
+
 create table tbl_usuario_playlist(
 id_usuario_playlist int primary key,
 id_usuarios integer,
@@ -46,6 +55,9 @@ foreign key (id_genero) references tbl_genero(id_genero),
 foreign key (id_album) references tbl_album(id_album),
 foreign key (id_playlist) references tbl_playlist (id_playlist)
 );
+
+
+
 ALTER TABLE `db_sound_hub_turma_ba`.`tbl_musica` 
 DROP COLUMN `data_criacao`;
 
@@ -106,11 +118,15 @@ id_genero int,
 FOREIGN KEY (id_genero) REFERENCES tbl_genero(id_genero)
 );
 
+insert into tbl_artista(nome, data_nascimento, foto_artista, id_genero)values
+("Taylor Swift", "2006/12/23", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToCiwlnI6TZrNzwZbKcZ9XzgFZTcRNehA1BQ&s", 4);
+
 create table tbl_genero
 (
 id_genero int not null auto_increment primary key,
 nome varchar(20)
 );
+
 
 create table tbl_musica_genero
 (
@@ -152,6 +168,14 @@ insert into tbl_musica(nome, duracao, foto_capa, URL)values
  "2:00" ,
  "https://m.media-amazon.com/images/I/713xBiQEdHL._AC_UF1000,1000_QL80_.jpg",
 "https://www.youtube.com/watch?v=fLexgOxsZu0&list=RDfLexgOxsZu0&start_radio=1");
+
+UPDATE tbl_musica
+SET nome = 'teste',
+   duracao = "2:00",
+   foto_capa = 'https://rollingstone.uol.com.br/media/uploads/coringa-instagram-fotos-novas-1.jpg',
+    URL = "https://www.youtube.com/watch?v=XDBsYsJi_1o"
+WHERE id_musica = 1; 
+
 
 DELETE FROM tbl_musica;
 
@@ -209,4 +233,3 @@ insert into tbl_usuario (nome, email, senha, data_registro)values
 ("Levi", "levi@gmail.com", "1234", "21/05/2024"),
 ("davi", "davi@gmail.com", "1234", "21/05/2024");
 
-drop database db_sound_hub_turma_ba;
